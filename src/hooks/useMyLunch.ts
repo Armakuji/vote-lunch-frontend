@@ -3,13 +3,23 @@ import { useMyLunchContract } from "hooks/useContract";
 import { useAccounts } from "hooks/useAccount";
 import { message } from "antd";
 
-export const useFoodListCount = () => {
-  const [foodCount, setFoodCount] = useState(0);
+export const useFoodList = () => {
+  const [foodList, setFoodList] = useState<string[]>([]);
   const myLunchContract = useMyLunchContract();
 
   const getFoodListCount = async () => {
-    const result = await myLunchContract.methods.getFoodNameListCount().call();
-    setFoodCount(result);
+    const foodCount = await myLunchContract.methods
+      .getFoodNameListCount()
+      .call();
+    let foodList = [];
+
+    //loop for get food list
+    for (let index = 0; index < foodCount; index++) {
+      const foodName = await myLunchContract.methods.foodNameList(index).call();
+      foodList.push(foodName);
+    }
+
+    setFoodList(foodList);
   };
 
   useEffect(() => {
@@ -18,7 +28,7 @@ export const useFoodListCount = () => {
     }
   }, [myLunchContract]); //eslint-disable-line
 
-  return foodCount;
+  return foodList;
 };
 
 export const useGetVoteFoodCount = () => {
@@ -59,5 +69,5 @@ export const useVoteFoodByName = () => {
       });
   };
 
-  return { voteFoodByName, loading };
+  return { voteFoodByName, voteLoading: loading };
 };
