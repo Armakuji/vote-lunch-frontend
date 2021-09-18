@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from "react";
-import { Row, Col, Card, Button, Typography } from "antd";
+import React, { useEffect, useState, FC } from "react";
+import { Row, Col, Card, Button, Typography, Spin } from "antd";
 import { uniqueId, get } from "lodash";
 import styled from "styled-components";
 
@@ -14,15 +14,21 @@ interface foodCount {
   [foodName: string]: number;
 }
 
-const FoodList = () => {
+interface FoodListProps {
+  refresh: boolean;
+  setRefresh: (refresh: boolean) => void;
+}
+
+const FoodList: FC<FoodListProps> = (props) => {
   const { Meta } = Card;
   const { Title } = Typography;
+  const { refresh, setRefresh } = props;
 
   const [foodCountList, setFoodCountList] = useState<foodCount>();
   const [loading, setLoading] = useState<boolean>(false);
 
-  const foodList = useFoodList();
-  const { voteFoodByName, voteLoading } = useVoteFoodByName();
+  const foodList = useFoodList(refresh);
+  const { voteFoodByName, voteFinish } = useVoteFoodByName();
   const { getVoteFoodCount } = useGetVoteFoodCount();
 
   useEffect(() => {
@@ -35,66 +41,74 @@ const FoodList = () => {
         foodCountResult = { ...foodCountResult, [foodName]: count };
       }
       setLoading(false);
+      setRefresh(false);
       setFoodCountList(foodCountResult);
     };
 
-    if (voteLoading === false) {
-      getFoodCount();
-    }
     setLoading(true);
-  }, [voteLoading, foodList]); //eslint-disable-line
+    getFoodCount();
+  }, [voteFinish, refresh, foodList]); //eslint-disable-line
 
   return (
-    <Row justify="space-between" gutter={[24, 24]}>
-      {foodList.map((foodName: string) => {
-        return (
-          <Col xs={24} md={12} lg={8} key={uniqueId()}>
-            <FoodCardStyle>
-              <Card
-                hoverable
-                style={{ width: "100%" }}
-                cover={
-                  <img className="food-image" alt="foodImage" src={food_1} />
-                }
-              >
-                <Meta
-                  title={
-                    <Title level={4}>{foodName.toLocaleUpperCase()}</Title>
+    <FoodCardStyle>
+      <Spin spinning={loading}>
+        <Row className="food-list-container" gutter={[24, 24]}>
+          {foodList.map((foodName: string) => {
+            return (
+              <Col xs={24} md={12} lg={8} key={uniqueId()}>
+                <Card
+                  hoverable
+                  style={{ width: "100%" }}
+                  cover={
+                    <img className="food-image" alt="foodImage" src={food_1} />
                   }
-                  description={
-                    <div>
-                      {" "}
-                      <div className="vote-description">
-                        Total Voted :{" "}
-                        <label className="text-bold">
-                          {get(foodCountList, foodName, 0)}
-                        </label>
+                >
+                  <Meta
+                    title={
+                      <Title level={4}>{foodName.toLocaleUpperCase()}</Title>
+                    }
+                    description={
+                      <div>
+                        {" "}
+                        <div className="vote-description">
+                          Total Voted :{" "}
+                          <label className="text-bold">
+                            {get(foodCountList, foodName, 0)}
+                          </label>
+                        </div>
+                        <VoteButton>
+                          <Button
+                            className="vote-btn"
+                            onClick={() => voteFoodByName(foodName)}
+                          >
+                            VOTE
+                          </Button>
+                        </VoteButton>
                       </div>
-                      <Button
-                        loading={loading}
-                        className="vote-btn"
-                        onClick={() => voteFoodByName(foodName)}
-                      >
-                        VOTE
-                      </Button>
-                    </div>
-                  }
-                />
-              </Card>
-            </FoodCardStyle>
-          </Col>
-        );
-      })}
-    </Row>
+                    }
+                  />
+                </Card>
+              </Col>
+            );
+          })}
+        </Row>
+      </Spin>
+    </FoodCardStyle>
   );
 };
 
-const FoodCardStyle = styled.div`
+const VoteButton = styled.div`
   .vote-btn {
     width: 100%;
     margin-top: 1em;
     height: 3em;
     font-weight: bold;
+  }
+`;
+
+const FoodCardStyle = styled.div`
+  .food-list-container {
+    margin-top: 20px;
   }
 
   .food-image {

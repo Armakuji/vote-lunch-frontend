@@ -20,7 +20,7 @@
         "type": "uint256"
       }
     ],
-    "name": "foodNameList",
+    "name": "foodList",
     "outputs": [
       {
         "internalType": "string",
@@ -35,7 +35,7 @@
   {
     "constant": true,
     "inputs": [],
-    "name": "getFoodNameListCount",
+    "name": "getFoodCount",
     "outputs": [
       {
         "internalType": "uint256",
@@ -56,7 +56,7 @@
         "type": "string"
       }
     ],
-    "name": "getVoteFoodCount",
+    "name": "getVotedFoodByName",
     "outputs": [
       {
         "internalType": "uint256",
@@ -78,6 +78,21 @@
       }
     ],
     "name": "voteFoodByName",
+    "outputs": [],
+    "payable": false,
+    "stateMutability": "nonpayable",
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "internalType": "string",
+        "name": "foodName",
+        "type": "string"
+      }
+    ],
+    "name": "addFood",
     "outputs": [],
     "payable": false,
     "stateMutability": "nonpayable",

@@ -1,6 +1,6 @@
 # Getting Started with Vote Lunch App
 
-This project use for practice my React + web3 for connect Smart Contract
+This project use for practice my React + web3 to interact with Smart Contract
 
 ## Available Scripts
 

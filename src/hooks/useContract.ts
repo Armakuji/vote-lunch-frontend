@@ -23,7 +23,7 @@ export const useContract = (
 };
 
 export const useMyLunchContract = () => {
-  const myLunchAddress = "0x35cF09cdfCD2C5Cbe748640824552a5F42F91cFc";
+  const myLunchAddress = "0x9165BfB64f764eA7D4455A2EBE2616fd79AdCB63";
   const abi = (myLunchAbi as unknown) as AbiItem;
 
   return useContract(abi, myLunchAddress);

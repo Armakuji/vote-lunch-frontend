@@ -3,19 +3,17 @@ import { useMyLunchContract } from "hooks/useContract";
 import { useAccounts } from "hooks/useAccount";
 import { message } from "antd";
 
-export const useFoodList = () => {
+export const useFoodList = (refresh: boolean) => {
   const [foodList, setFoodList] = useState<string[]>([]);
   const myLunchContract = useMyLunchContract();
 
-  const getFoodListCount = async () => {
-    const foodCount = await myLunchContract.methods
-      .getFoodNameListCount()
-      .call();
+  const getFoodList = async () => {
+    const foodCount = await myLunchContract.methods.getFoodCount().call();
     let foodList = [];
 
     //loop for get food list
     for (let index = 0; index < foodCount; index++) {
-      const foodName = await myLunchContract.methods.foodNameList(index).call();
+      const foodName = await myLunchContract.methods.foodList(index).call();
       foodList.push(foodName);
     }
 
@@ -23,10 +21,10 @@ export const useFoodList = () => {
   };
 
   useEffect(() => {
-    if (myLunchContract) {
-      getFoodListCount();
+    if (myLunchContract || refresh) {
+      getFoodList();
     }
-  }, [myLunchContract]); //eslint-disable-line
+  }, [myLunchContract, refresh]); //eslint-disable-line
 
   return foodList;
 };
@@ -36,7 +34,7 @@ export const useGetVoteFoodCount = () => {
 
   const getVoteFoodCount = async (foodName: string) => {
     const result = await myLunchContract.methods
-      .getVoteFoodCount(foodName)
+      .getVotedFoodByName(foodName)
       .call();
     return result;
   };
@@ -45,12 +43,12 @@ export const useGetVoteFoodCount = () => {
 };
 
 export const useVoteFoodByName = () => {
-  const [loading, setLoading] = useState<boolean>(false);
+  const [voteFinish, setVoteFinish] = useState<boolean>(false);
   const myLunchContract = useMyLunchContract();
   const { myAccount } = useAccounts();
 
   const voteFoodByName = async (foodName: string) => {
-    setLoading(true);
+    setVoteFinish(false);
     const options = {
       from: myAccount,
     };
@@ -58,16 +56,41 @@ export const useVoteFoodByName = () => {
       .voteFoodByName(foodName)
       .send(options)
       .on("error", (error: any) => {
-        setLoading(false);
+        setVoteFinish(true);
         message.error("Vote failed : ", error);
       })
       .on("receipt", (confirmationNumber: any, receipt: any) => {
         console.log("confirmationNumber", confirmationNumber);
-        console.log(receipt);
-        setLoading(false);
+        setVoteFinish(true);
         message.success("Vote confirmed");
       });
   };
 
-  return { voteFoodByName, voteLoading: loading };
+  return { voteFoodByName, voteFinish };
+};
+
+export const useAddFood = () => {
+  const myLunchContract = useMyLunchContract();
+  const { myAccount } = useAccounts();
+  const options = {
+    from: myAccount,
+  };
+
+  const [status, setStatus] = useState<string>();
+  const [addFoodMessage, setAddFoodMessage] = useState<string>();
+
+  const addFood = async (foodName: string) => {
+    await myLunchContract.methods
+      .addFood(foodName)
+      .send(options)
+      .on("error", (error: any) => {
+        setStatus("ERROR");
+        setAddFoodMessage(error);
+      })
+      .on("receipt", (confirmationNumber: any, receipt: any) => {
+        setStatus("SUCCESS");
+      });
+  };
+
+  return { addFood, status, addFoodMessage };
 };
