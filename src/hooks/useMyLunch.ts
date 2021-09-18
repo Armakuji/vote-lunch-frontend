@@ -9,6 +9,7 @@ export const useFoodList = (refresh: boolean) => {
 
   const getFoodList = async () => {
     const foodCount = await myLunchContract.methods.getFoodCount().call();
+    if (foodCount === 0) return;
     let foodList = [];
 
     //loop for get food list

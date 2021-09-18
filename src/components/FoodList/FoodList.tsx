@@ -1,5 +1,5 @@
 import React, { useEffect, useState, FC } from "react";
-import { Row, Col, Card, Button, Typography, Spin } from "antd";
+import { Row, Col, Card, Button, Typography, Spin, Empty } from "antd";
 import { uniqueId, get } from "lodash";
 import styled from "styled-components";
 
@@ -52,11 +52,18 @@ const FoodList: FC<FoodListProps> = (props) => {
   return (
     <FoodCardStyle>
       <Spin spinning={loading}>
-        <Row className="food-list-container" gutter={[24, 24]}>
-          {foodList.map((foodName: string) => {
+        {foodList.length === 0 ? (
+          <EmptyCardStyle>
+            <Card className="empty-card">
+              <Empty />
+            </Card>
+          </EmptyCardStyle>
+        ) : (
+          foodList.map((foodName: string) => {
             return (
               <Col xs={24} md={12} lg={8} key={uniqueId()}>
                 <Card
+                  bordered={false}
                   hoverable
                   style={{ width: "100%" }}
                   cover={
@@ -90,8 +97,9 @@ const FoodList: FC<FoodListProps> = (props) => {
                 </Card>
               </Col>
             );
-          })}
-        </Row>
+          })
+        )}
+        <Row className="food-list-container" gutter={[24, 24]}></Row>
       </Spin>
     </FoodCardStyle>
   );
@@ -103,6 +111,18 @@ const VoteButton = styled.div`
     margin-top: 1em;
     height: 3em;
     font-weight: bold;
+  }
+`;
+const EmptyCardStyle = styled.div`
+  .empty-card {
+    margin-top: 40px;
+  }
+
+  .ant-card-body {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 50vh;
   }
 `;
 

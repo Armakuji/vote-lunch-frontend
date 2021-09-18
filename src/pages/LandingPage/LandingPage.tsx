@@ -11,7 +11,7 @@ const LandingPage = () => {
   const [refresh, setRefresh] = useState<boolean>(false);
 
   return (
-    <Card>
+    <Card bordered={false}>
       <Row justify="space-between">
         <Col>
           <h2>Let's Vote Lunch</h2>
