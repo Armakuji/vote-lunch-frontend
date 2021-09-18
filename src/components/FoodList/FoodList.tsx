@@ -59,45 +59,51 @@ const FoodList: FC<FoodListProps> = (props) => {
             </Card>
           </EmptyCardStyle>
         ) : (
-          foodList.map((foodName: string) => {
-            return (
-              <Col xs={24} md={12} lg={8} key={uniqueId()}>
-                <Card
-                  bordered={false}
-                  hoverable
-                  style={{ width: "100%" }}
-                  cover={
-                    <img className="food-image" alt="foodImage" src={food_1} />
-                  }
-                >
-                  <Meta
-                    title={
-                      <Title level={4}>{foodName.toLocaleUpperCase()}</Title>
+          <Row className="food-list-container" gutter={[24, 24]}>
+            {foodList.map((foodName: string) => {
+              return (
+                <Col xs={24} md={12} lg={8} key={uniqueId()}>
+                  <Card
+                    bordered={false}
+                    hoverable
+                    style={{ width: "100%" }}
+                    cover={
+                      <img
+                        className="food-image"
+                        alt="foodImage"
+                        src={food_1}
+                      />
                     }
-                    description={
-                      <div>
-                        {" "}
-                        <div className="vote-description">
-                          Total Voted :{" "}
-                          <label className="text-bold">
-                            {get(foodCountList, foodName, 0)}
-                          </label>
+                  >
+                    <Meta
+                      title={
+                        <Title level={4}>{foodName.toLocaleUpperCase()}</Title>
+                      }
+                      description={
+                        <div>
+                          {" "}
+                          <div className="vote-description">
+                            Total Voted :{" "}
+                            <label className="text-bold">
+                              {get(foodCountList, foodName, 0)}
+                            </label>
+                          </div>
+                          <VoteButton>
+                            <Button
+                              className="vote-btn"
+                              onClick={() => voteFoodByName(foodName)}
+                            >
+                              VOTE
+                            </Button>
+                          </VoteButton>
                         </div>
-                        <VoteButton>
-                          <Button
-                            className="vote-btn"
-                            onClick={() => voteFoodByName(foodName)}
-                          >
-                            VOTE
-                          </Button>
-                        </VoteButton>
-                      </div>
-                    }
-                  />
-                </Card>
-              </Col>
-            );
-          })
+                      }
+                    />
+                  </Card>
+                </Col>
+              );
+            })}
+          </Row>
         )}
         <Row className="food-list-container" gutter={[24, 24]}></Row>
       </Spin>

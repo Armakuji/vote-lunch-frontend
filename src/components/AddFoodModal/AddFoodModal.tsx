@@ -30,6 +30,7 @@ const AddFoodModal: FC<AddFoodModalProps> = (props) => {
       message.success({ content: "Add Success!", key: "updatable" });
     }
     if (status === "ERROR") {
+      setLoading(false);
       message.error({ content: "This food was added", key: "updatable" });
     }
   }, [status, addFoodMessage]); //eslint-disable-line
