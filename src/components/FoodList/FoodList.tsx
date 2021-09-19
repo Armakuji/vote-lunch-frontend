@@ -17,12 +17,13 @@ interface foodCount {
 interface FoodListProps {
   refresh: boolean;
   setRefresh: (refresh: boolean) => void;
+  setAddFoodModalVisible: (visible: boolean) => void;
 }
 
 const FoodList: FC<FoodListProps> = (props) => {
   const { Meta } = Card;
   const { Title } = Typography;
-  const { refresh, setRefresh } = props;
+  const { refresh, setRefresh, setAddFoodModalVisible } = props;
 
   const [foodCountList, setFoodCountList] = useState<foodCount>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -51,6 +52,15 @@ const FoodList: FC<FoodListProps> = (props) => {
 
   return (
     <FoodCardStyle>
+      <AddFoodButton>
+        <Button
+          type="primary"
+          className="add-food-button"
+          onClick={() => setAddFoodModalVisible(true)}
+        >
+          Add Food +
+        </Button>
+      </AddFoodButton>
       <Spin spinning={loading}>
         {foodList.length === 0 ? (
           <EmptyCardStyle>
@@ -59,21 +69,12 @@ const FoodList: FC<FoodListProps> = (props) => {
             </Card>
           </EmptyCardStyle>
         ) : (
-          <Card
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              marginLeft: "1em",
-              marginRight: "1em",
-              maxWidth: "1200px",
-            }}
-          >
-            <Row className="food-list-container" gutter={[10, 30]}>
+          <Card className="food-list-container">
+            <Row gutter={[10, 30]}>
               {foodList.map((foodName: string) => {
                 return (
-                  <Col xs={24} md={12} lg={8} key={uniqueId()}>
+                  <Col lg={8} key={uniqueId()}>
                     <Card
-                      bordered={false}
                       hoverable
                       cover={
                         <img
@@ -121,6 +122,17 @@ const FoodList: FC<FoodListProps> = (props) => {
   );
 };
 
+const AddFoodButton = styled.div`
+  display: flex;
+  justify-content: flex-end;
+
+  .add-food-button {
+    height: 38px;
+    padding-left: 38px;
+    padding-right: 38px;
+  }
+`;
+
 const VoteButton = styled.div`
   .vote-btn {
     width: 100%;
@@ -129,9 +141,10 @@ const VoteButton = styled.div`
     font-weight: bold;
   }
 `;
+
 const EmptyCardStyle = styled.div`
   .empty-card {
-    margin-top: 40px;
+    margin-top: 20px;
   }
 
   .ant-card-body {
@@ -139,12 +152,31 @@ const EmptyCardStyle = styled.div`
     justify-content: center;
     align-items: center;
     height: 50vh;
+    width: 1200px;
   }
 `;
 
 const FoodCardStyle = styled.div`
   .food-list-container {
-    margin-top: 20px;
+    display: flex;
+    justify-content: start;
+    margin-left: 1em;
+    margin-right: 1em;
+    max-width: 1200px;
+    margin-top: 30px;
+    min-width: 1200px;
+
+    .ant-card-body {
+      width: 100%;
+    }
+  }
+
+  @media screen and (max-width: 480px) {
+    .food-list-container {
+      margin-left: 0em;
+      margin-right: 0em;
+      min-width: 0px;
+    }
   }
 
   .food-image {
