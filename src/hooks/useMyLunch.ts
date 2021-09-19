@@ -77,10 +77,11 @@ export const useAddFood = () => {
     from: myAccount,
   };
 
-  const [status, setStatus] = useState<string>();
+  const [status, setStatus] = useState<string>("INITIAL");
   const [addFoodMessage, setAddFoodMessage] = useState<string>();
 
   const addFood = async (foodName: string) => {
+    setStatus("UPDATING");
     await myLunchContract.methods
       .addFood(foodName)
       .send(options)

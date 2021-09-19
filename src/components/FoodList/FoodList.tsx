@@ -32,20 +32,20 @@ const FoodList: FC<FoodListProps> = (props) => {
   const { voteFoodByName, voteFinish } = useVoteFoodByName();
   const { getVoteFoodCount } = useGetVoteFoodCount();
 
+  const getFoodCount = async () => {
+    let foodCountResult = {};
+    for (let index = 0; index < foodList.length; index++) {
+      const foodName = foodList[index];
+      const count = await getVoteFoodCount(foodName);
+
+      foodCountResult = { ...foodCountResult, [foodName]: count };
+    }
+    setLoading(false);
+    setRefresh(false);
+    setFoodCountList(foodCountResult);
+  };
+
   useEffect(() => {
-    const getFoodCount = async () => {
-      let foodCountResult = {};
-      for (let index = 0; index < foodList.length; index++) {
-        const foodName = foodList[index];
-        const count = await getVoteFoodCount(foodName);
-
-        foodCountResult = { ...foodCountResult, [foodName]: count };
-      }
-      setLoading(false);
-      setRefresh(false);
-      setFoodCountList(foodCountResult);
-    };
-
     setLoading(true);
     getFoodCount();
   }, [voteFinish, refresh, foodList]); //eslint-disable-line
