@@ -6,7 +6,7 @@ export const web3Slice = createSlice({
     value: null,
   },
   reducers: {
-    setWeb3: (state, action) => {
+    setWeb3Store: (state, action) => {
       state.value = action.payload;
     },
     clearWeb3: (state, action) => {
@@ -15,6 +15,6 @@ export const web3Slice = createSlice({
   },
 });
 
-export const { setWeb3, clearWeb3 } = web3Slice.actions;
+export const { setWeb3Store, clearWeb3 } = web3Slice.actions;
 
 export default web3Slice.reducer;
