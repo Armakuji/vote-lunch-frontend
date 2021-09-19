@@ -28,16 +28,23 @@ const LandingPage = () => {
           </ButtonStyle>
         </Col>
       </Row>
-
-      <FoodList refresh={refresh} setRefresh={setRefresh} />
-      <AddFoodModal
-        visible={addFoodModalVisible}
-        setVisible={setAddFoodModalVisible}
-        setRefresh={setRefresh}
-      />
+      <FoodListContainer>
+        <FoodList refresh={refresh} setRefresh={setRefresh} />
+        <AddFoodModal
+          visible={addFoodModalVisible}
+          setVisible={setAddFoodModalVisible}
+          setRefresh={setRefresh}
+        />
+      </FoodListContainer>
     </Card>
   );
 };
+
+const FoodListContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  margin-top: 30px;
+`;
 
 const ButtonStyle = styled.div`
   .add-food-button {

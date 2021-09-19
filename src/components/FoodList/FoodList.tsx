@@ -59,53 +59,63 @@ const FoodList: FC<FoodListProps> = (props) => {
             </Card>
           </EmptyCardStyle>
         ) : (
-          <Row className="food-list-container" gutter={[24, 24]}>
-            {foodList.map((foodName: string) => {
-              return (
-                <Col xs={24} md={12} lg={8} key={uniqueId()}>
-                  <Card
-                    bordered={false}
-                    hoverable
-                    style={{ width: "100%" }}
-                    cover={
-                      <img
-                        className="food-image"
-                        alt="foodImage"
-                        src={food_1}
-                      />
-                    }
-                  >
-                    <Meta
-                      title={
-                        <Title level={4}>{foodName.toLocaleUpperCase()}</Title>
+          <Card
+            style={{
+              display: "flex",
+              justifyContent: "center",
+              marginLeft: "1em",
+              marginRight: "1em",
+              maxWidth: "1200px",
+            }}
+          >
+            <Row className="food-list-container" gutter={[10, 30]}>
+              {foodList.map((foodName: string) => {
+                return (
+                  <Col xs={24} md={12} lg={8} key={uniqueId()}>
+                    <Card
+                      bordered={false}
+                      hoverable
+                      cover={
+                        <img
+                          className="food-image"
+                          alt="foodImage"
+                          src={food_1}
+                        />
                       }
-                      description={
-                        <div>
-                          {" "}
-                          <div className="vote-description">
-                            Total Voted :{" "}
-                            <label className="text-bold">
-                              {get(foodCountList, foodName, 0)}
-                            </label>
+                    >
+                      <Meta
+                        title={
+                          <Title level={4}>
+                            {foodName.toLocaleUpperCase()}
+                          </Title>
+                        }
+                        description={
+                          <div>
+                            {" "}
+                            <div className="vote-description">
+                              Total Voted :{" "}
+                              <label className="text-bold">
+                                {get(foodCountList, foodName, 0)}
+                              </label>
+                            </div>
+                            <VoteButton>
+                              <Button
+                                className="vote-btn"
+                                onClick={() => voteFoodByName(foodName)}
+                              >
+                                VOTE
+                              </Button>
+                            </VoteButton>
                           </div>
-                          <VoteButton>
-                            <Button
-                              className="vote-btn"
-                              onClick={() => voteFoodByName(foodName)}
-                            >
-                              VOTE
-                            </Button>
-                          </VoteButton>
-                        </div>
-                      }
-                    />
-                  </Card>
-                </Col>
-              );
-            })}
-          </Row>
+                        }
+                      />
+                    </Card>
+                  </Col>
+                );
+              })}
+            </Row>
+          </Card>
         )}
-        <Row className="food-list-container" gutter={[24, 24]}></Row>
       </Spin>
     </FoodCardStyle>
   );
