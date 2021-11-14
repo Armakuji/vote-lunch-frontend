@@ -8,6 +8,7 @@ import { RootState } from "store";
 export const useWeb3 = () => {
   const web3Store = useSelector((state: RootState) => state.web3.value);
   const dispatch = useDispatch();
+  const { ethereum } = window;
 
   //for dev with metamask
   const RPC_URL = process.env.REACT_APP_RPC_URL || "";
@@ -17,12 +18,17 @@ export const useWeb3 = () => {
 
   //defaualt http provider by using infura httpProvider
   const [web3, setweb3] = useState(new Web3(web3Store || httpProvider));
+  const [isValidChainId, setIsValidChainId] = useState<boolean>(false);
 
   const initialWeb3 = useCallback(async () => {
-    if (window.ethereum) {
-      const tmpWeb3 = new Web3(window.ethereum);
+    const chainIdByte32 = await ethereum.request({ method: "eth_chainId" });
+    const chainId = web3.utils.hexToNumber(chainIdByte32);
+    if (chainId !== 42) return setIsValidChainId(true);
+
+    if (ethereum) {
+      const tmpWeb3 = new Web3(ethereum);
       try {
-        const result = await window.ethereum.enable();
+        const result = await ethereum.enable();
 
         if (result) {
           dispatch(setWeb3Store(tmpWeb3));
@@ -33,6 +39,11 @@ export const useWeb3 = () => {
       }
     }
   }, []); //eslint-disable-line
+
+  const connectWallet = () => {
+    setIsValidChainId(false);
+    initialWeb3();
+  };
 
   useEffect(() => {
     if (!web3Store) {
@@ -50,5 +61,5 @@ export const useWeb3 = () => {
   //   dispatch(setWeb3(web3));
   // }
 
-  return { web3, initialWeb3 };
+  return { web3, isValidChainId, initialWeb3, connectWallet };
 };
