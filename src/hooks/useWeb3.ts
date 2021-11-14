@@ -38,7 +38,7 @@ export const useWeb3 = () => {
         console.log(err);
       }
     }
-  }, []); //eslint-disable-line
+  }, [web3Store, web3]); //eslint-disable-line
 
   const connectWallet = () => {
     setIsValidChainId(false);

@@ -58,16 +58,16 @@ const FoodList: FC<FoodListProps> = (props) => {
 
   return (
     <FoodCardStyle>
-      <AddFoodButton>
-        <Button
+      <HeaderContainer>
+        <AddFoodButton
           type="primary"
           className="add-food-button"
           disabled={!myAccount}
           onClick={() => setAddFoodModalVisible(true)}
         >
           Add Food +
-        </Button>
-      </AddFoodButton>
+        </AddFoodButton>
+      </HeaderContainer>
       <Spin spinning={false}>
         {foodList.length === 0 ? (
           <EmptyCardStyle>
@@ -131,15 +131,16 @@ const FoodList: FC<FoodListProps> = (props) => {
   );
 };
 
-const AddFoodButton = styled.div`
+const HeaderContainer = styled.div`
   display: flex;
   justify-content: flex-end;
+`;
 
-  .add-food-button {
-    height: 38px;
-    padding-left: 38px;
-    padding-right: 38px;
-  }
+const AddFoodButton = styled(Button)`
+  height: 38px;
+  padding-left: 38px;
+  padding-right: 38px;
+  margin-right: 1em;
 `;
 
 const VoteButton = styled.div`
@@ -161,7 +162,6 @@ const EmptyCardStyle = styled.div`
     justify-content: center;
     align-items: center;
     height: 50vh;
-    width: 1200px;
   }
 `;
 
@@ -172,8 +172,8 @@ const FoodCardStyle = styled.div`
     margin-left: 1em;
     margin-right: 1em;
     max-width: 1200px;
-    margin-top: 30px;
-    min-width: 1200px;
+    margin-top: 10px;
+    min-width: 960px;
 
     .ant-card-body {
       width: 100%;

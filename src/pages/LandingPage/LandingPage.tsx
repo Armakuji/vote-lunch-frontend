@@ -13,17 +13,8 @@ const LandingPage = () => {
   );
   const [refresh, setRefresh] = useState<boolean>(false);
   const { Title } = Typography;
-  const { myAccount, clearAccount } = useAccounts();
+  const { myAccount } = useAccounts();
   const { isValidChainId, connectWallet } = useWeb3();
-  const { ethereum } = window;
-  if (ethereum) {
-    ethereum.on("accountsChanged", async (accounts: string[]) => {
-      if (accounts.length <= 0) clearAccount();
-    });
-    ethereum.on("chainChanged", (chainIdByte32: string) => {
-      window.location.reload();
-    });
-  }
 
   function warning() {
     Modal.warning({
@@ -71,10 +62,13 @@ const LandingPage = () => {
 
   return (
     <Card bordered={false}>
-      <FoodListHeadaer>
-        <Title level={3}> Let's Vote Lunch</Title>
-        {renderAccount}
-      </FoodListHeadaer>
+      <FoodListHeaderContainer>
+        <FoodListHeadaer>
+          <Title level={3}> Let's Vote Lunch</Title>
+          {renderAccount}
+        </FoodListHeadaer>
+      </FoodListHeaderContainer>
+
       <FoodListContainer>
         <FoodList
           refresh={refresh}
@@ -93,6 +87,12 @@ const LandingPage = () => {
   );
 };
 
+const FoodListHeaderContainer = styled.div`
+  display: flex;
+  justify-content: center;
+  padding-bottom: 2em;
+`;
+
 const FoodListContainer = styled.div`
   display: flex;
   justify-content: center;
@@ -102,19 +102,17 @@ const FoodListContainer = styled.div`
 const FoodListHeadaer = styled.div`
   display: flex;
   justify-content: space-between;
-  padding: 2em;
+  text-align: center;
+  width: 960px;
 `;
 
 const ConnectWalletBtn = styled(Button)`
-  border-radius: 15px;
+  border-radius: 24px;
+  height: 52px;
+  width: 180px;
 `;
 
-const AddressBtn = styled(Button)`
-  border-radius: 15px;
-  height: fit-content;
-  padding-top: 0.5em;
-  padding-bottom: 0.5em;
-`;
+const AddressBtn = styled(ConnectWalletBtn)``;
 
 const UserAvatar = styled(Avatar)`
   background-color: #f56a00;

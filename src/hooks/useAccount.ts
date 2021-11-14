@@ -25,6 +25,17 @@ export const useAccounts = () => {
     setMyAccount("");
   };
 
+  const { ethereum } = window;
+  if (ethereum) {
+    ethereum.on("accountsChanged", async (accounts: string[]) => {
+      if (accounts.length <= 0) return clearAccount();
+      return fetch();
+    });
+    ethereum.on("chainChanged", () => {
+      window.location.reload();
+    });
+  }
+
   useEffect(() => {
     fetch();
   }, [fetch]);
@@ -33,6 +44,5 @@ export const useAccounts = () => {
     accounts,
     myAccount,
     balance,
-    clearAccount,
   };
 };
