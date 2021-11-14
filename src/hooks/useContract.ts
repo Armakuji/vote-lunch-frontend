@@ -10,7 +10,7 @@ export const useContract = (
   address: string,
   contractOptions?: ContractOptions
 ) => {
-  const web3 = useWeb3();
+  const { web3 } = useWeb3();
   const [contract, setContract] = useState(
     new web3.eth.Contract(abi, address, contractOptions)
   );

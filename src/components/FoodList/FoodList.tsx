@@ -16,6 +16,7 @@ interface foodCount {
 
 interface FoodListProps {
   refresh: boolean;
+  myAccount?: string;
   setRefresh: (refresh: boolean) => void;
   setAddFoodModalVisible: (visible: boolean) => void;
 }
@@ -23,7 +24,7 @@ interface FoodListProps {
 const FoodList: FC<FoodListProps> = (props) => {
   const { Meta } = Card;
   const { Title } = Typography;
-  const { refresh, setRefresh, setAddFoodModalVisible } = props;
+  const { myAccount, refresh, setRefresh, setAddFoodModalVisible } = props;
 
   const [foodCountList, setFoodCountList] = useState<foodCount>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -31,6 +32,11 @@ const FoodList: FC<FoodListProps> = (props) => {
   const foodList = useFoodList(refresh);
   const { voteFoodByName, voteFinish } = useVoteFoodByName();
   const { getVoteFoodCount } = useGetVoteFoodCount();
+
+  const handleVoteFoodByName = (foodName: string) => {
+    setLoading(true);
+    voteFoodByName(foodName);
+  };
 
   const getFoodCount = async () => {
     let foodCountResult = {};
@@ -56,12 +62,13 @@ const FoodList: FC<FoodListProps> = (props) => {
         <Button
           type="primary"
           className="add-food-button"
+          disabled={!myAccount}
           onClick={() => setAddFoodModalVisible(true)}
         >
           Add Food +
         </Button>
       </AddFoodButton>
-      <Spin spinning={loading}>
+      <Spin spinning={false}>
         {foodList.length === 0 ? (
           <EmptyCardStyle>
             <Card className="empty-card">
@@ -102,7 +109,9 @@ const FoodList: FC<FoodListProps> = (props) => {
                             <VoteButton>
                               <Button
                                 className="vote-btn"
-                                onClick={() => voteFoodByName(foodName)}
+                                disabled={!myAccount}
+                                loading={loading}
+                                onClick={() => handleVoteFoodByName(foodName)}
                               >
                                 VOTE
                               </Button>

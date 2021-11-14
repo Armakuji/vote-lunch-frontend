@@ -2,7 +2,7 @@ import { useState, useEffect, useCallback } from "react";
 import { useWeb3 } from "hooks/useWeb3";
 
 export const useAccounts = () => {
-  const web3 = useWeb3();
+  const { web3, initialWeb3 } = useWeb3();
   const [accounts, setAccounts] = useState<string[]>([]);
   const [balance, setBalance] = useState<string>();
   const [myAccount, setMyAccount] = useState<string>();
@@ -19,6 +19,16 @@ export const useAccounts = () => {
     }
   }, [web3]);
 
+  const clearAccount = () => {
+    setAccounts([]);
+    setBalance(undefined);
+    setMyAccount("");
+  };
+
+  const connectWallet = () => {
+    initialWeb3();
+  };
+
   useEffect(() => {
     fetch();
   }, [fetch]);
@@ -27,5 +37,7 @@ export const useAccounts = () => {
     accounts,
     myAccount,
     balance,
+    clearAccount,
+    connectWallet,
   };
 };
