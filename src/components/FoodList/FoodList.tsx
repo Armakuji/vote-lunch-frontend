@@ -16,6 +16,7 @@ interface foodCount {
 
 interface FoodListProps {
   refresh: boolean;
+  myAccount?: string;
   setRefresh: (refresh: boolean) => void;
   setAddFoodModalVisible: (visible: boolean) => void;
 }
@@ -23,7 +24,7 @@ interface FoodListProps {
 const FoodList: FC<FoodListProps> = (props) => {
   const { Meta } = Card;
   const { Title } = Typography;
-  const { refresh, setRefresh, setAddFoodModalVisible } = props;
+  const { myAccount, refresh, setRefresh, setAddFoodModalVisible } = props;
 
   const [foodCountList, setFoodCountList] = useState<foodCount>();
   const [loading, setLoading] = useState<boolean>(false);
@@ -31,6 +32,11 @@ const FoodList: FC<FoodListProps> = (props) => {
   const foodList = useFoodList(refresh);
   const { voteFoodByName, voteFinish } = useVoteFoodByName();
   const { getVoteFoodCount } = useGetVoteFoodCount();
+
+  const handleVoteFoodByName = (foodName: string) => {
+    setLoading(true);
+    voteFoodByName(foodName);
+  };
 
   const getFoodCount = async () => {
     let foodCountResult = {};
@@ -52,16 +58,17 @@ const FoodList: FC<FoodListProps> = (props) => {
 
   return (
     <FoodCardStyle>
-      <AddFoodButton>
-        <Button
+      <HeaderContainer>
+        <AddFoodButton
           type="primary"
           className="add-food-button"
+          disabled={!myAccount}
           onClick={() => setAddFoodModalVisible(true)}
         >
           Add Food +
-        </Button>
-      </AddFoodButton>
-      <Spin spinning={loading}>
+        </AddFoodButton>
+      </HeaderContainer>
+      <Spin spinning={false}>
         {foodList.length === 0 ? (
           <EmptyCardStyle>
             <Card className="empty-card">
@@ -102,7 +109,9 @@ const FoodList: FC<FoodListProps> = (props) => {
                             <VoteButton>
                               <Button
                                 className="vote-btn"
-                                onClick={() => voteFoodByName(foodName)}
+                                disabled={!myAccount}
+                                loading={loading}
+                                onClick={() => handleVoteFoodByName(foodName)}
                               >
                                 VOTE
                               </Button>
@@ -122,15 +131,16 @@ const FoodList: FC<FoodListProps> = (props) => {
   );
 };
 
-const AddFoodButton = styled.div`
+const HeaderContainer = styled.div`
   display: flex;
   justify-content: flex-end;
+`;
 
-  .add-food-button {
-    height: 38px;
-    padding-left: 38px;
-    padding-right: 38px;
-  }
+const AddFoodButton = styled(Button)`
+  height: 38px;
+  padding-left: 38px;
+  padding-right: 38px;
+  margin-right: 1em;
 `;
 
 const VoteButton = styled.div`
@@ -152,7 +162,6 @@ const EmptyCardStyle = styled.div`
     justify-content: center;
     align-items: center;
     height: 50vh;
-    width: 1200px;
   }
 `;
 
@@ -163,8 +172,8 @@ const FoodCardStyle = styled.div`
     margin-left: 1em;
     margin-right: 1em;
     max-width: 1200px;
-    margin-top: 30px;
-    min-width: 1200px;
+    margin-top: 10px;
+    min-width: 960px;
 
     .ant-card-body {
       width: 100%;

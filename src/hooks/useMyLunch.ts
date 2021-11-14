@@ -61,7 +61,6 @@ export const useVoteFoodByName = () => {
         message.error("Vote failed : ", error);
       })
       .on("receipt", (confirmationNumber: any, receipt: any) => {
-        console.log("confirmationNumber", confirmationNumber);
         setVoteFinish(true);
         message.success("Vote confirmed");
       });
